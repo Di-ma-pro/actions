@@ -20,4 +20,5 @@ jobs:
       - run: set -eu
       - run: mkdir "$HOME/.ssh"
       - run: echo "${{ secrets.ssh_key }}" > "$HOME/.ssh/key"
+      - run: chmod 600 "$HOME/.ssh/key"
       - run: rsync -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --archive --compress --delete . web@31.41.131.219:/var/www/html
