@@ -1,0 +1,23 @@
+name: Deploy
+
+on:
+  pull_request:
+  push:
+    branches:
+     - master
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: set -eu
+      - run: mkdir "$HOME/.ssh"
+      - run: echo "${{ secrets.ssh_key }}" > "$HOME/.ssh/key"
+      - run: rsync -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking-no" --archive --compress --delete . web@31.41.131.219:/var/www/html
